@@ -3,6 +3,7 @@ import { Upload } from '@aws-sdk/lib-storage';
 import { SignatureV4 } from '@aws-sdk/signature-v4';
 import { S3Config, S3File } from '../types/s3';
 import { logger } from '../utils/logger';
+import { HttpRequest } from '@aws-sdk/protocol-http';
 
 export class S3Service {
   private client: S3Client;
@@ -42,6 +43,19 @@ export class S3Service {
       disableHostPrefix: true,
       signerConstructor: SignatureV4
     });
+
+    // 添加中间件来修改请求头
+    this.client.middlewareStack.add(
+      (next) => async (args) => {
+        if (HttpRequest.isInstance(args.request)) {
+          args.request.headers['Access-Control-Allow-Origin'] = '*';
+        }
+        return next(args);
+      },
+      {
+        step: 'build',
+      }
+    );
   }
 
   async listFiles(prefix: string = ''): Promise<S3File[]> {
