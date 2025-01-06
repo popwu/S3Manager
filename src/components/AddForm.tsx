@@ -30,7 +30,7 @@ export function AddForm({ onClose }: AddFormProps) {
         <input
           type="text"
           required
-          value={formData.bucket}
+          value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         />
